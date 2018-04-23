@@ -1,4 +1,9 @@
 <?php
+/**
+ * Class to interact with the Po.et API
+ *
+ * @package Poet
+ */
 
 namespace Poet;
 
@@ -14,32 +19,40 @@ defined( 'ABSPATH' ) or exit;
 class Consumer {
 
 	/**
+	 * Name of the author
+	 *
 	 * @var string
 	 */
-	private $author;
+	protected $author;
 
 	/**
+	 * API URL
+	 *
 	 * @var string
 	 */
-	private $url;
+	protected $url;
 
 	/**
+	 * API Token
+	 *
 	 * @var string
 	 */
-	private $token;
+	protected $token;
 
 	/**
+	 * WP_Post data
+	 *
 	 * @var array
 	 */
-	private $post;
+	protected $post;
 
 	/**
 	 * Consumer constructor.
 	 *
-	 * @param string $author
-	 * @param string $url
-	 * @param string $token
-	 * @param array $post
+	 * @param string $author name of the author.
+	 * @param string $url API url.
+	 * @param string $token API token.
+	 * @param array  $post WordPress post data.
 	 */
 	public function __construct( $author, $url, $token, $post ) {
 		$this->author = $author;

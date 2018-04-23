@@ -1,17 +1,18 @@
 <?php
-/*
-Plugin Name: Po.et
-Plugin URI:  https://github.com/poetapp/wordpress-plugin
-Description: Automatically post to Po.et from WordPress using Frost
-Version:     1.0.1
-Author:      Po.et
-Author URI:  https://po.et
-License:     GPL2
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: poet
-Domain Path: /languages
-*/
-
+/**
+ * Plugin Name: Po.et
+ * Plugin URI:  https://github.com/poetapp/wordpress-plugin
+ * Description: Automatically post to Po.et from WordPress using Frost
+ * Version:     1.0.1
+ * Version:     1.0.1
+ * Author URI:  https://po.et
+ * License:     GPL2
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: poet
+ * Domain Path: /languages
+ *
+ * @package Poet
+ */
 
 namespace Poet;
 
@@ -34,7 +35,7 @@ class Plugin {
 	/**
 	 * Hold the singleton instance
 	 *
-	 * @var
+	 * @var \Poet\Plugin
 	 */
 	private static $instance;
 
@@ -61,10 +62,8 @@ class Plugin {
 		$dir = dirname( __FILE__ );
 		require_once( $dir . '/includes/class-poet-consumer.php' );
 
-		//Setting the plugin file location for later usage
 		$this->plugin_path = plugin_basename( __FILE__ );
 
-		//Setting plugin actions
 		register_activation_hook( $this->plugin_path, [ $this, 'activate' ] );
 		register_deactivation_hook( $this->plugin_path, [ $this, 'deactivate' ] );
 		register_uninstall_hook( $this->plugin_path, [ $this, 'uninstall' ] );
@@ -87,7 +86,7 @@ class Plugin {
 			return;
 		}
 
-		//Setting default values action to set settings default values on activation/reactivation
+		// Setting default values action to set settings default values on activation/reactivation.
 		do_action( 'poet_set_default_values_on_activation' );
 	}
 
@@ -101,7 +100,6 @@ class Plugin {
 			return;
 		}
 
-		//Unregister plugin settings on deactivation
 		unregister_setting(
 			'poet',
 			'poet_option',
@@ -119,7 +117,6 @@ class Plugin {
 			return;
 		}
 
-		//Delete plugin option values from WordPress database
 		delete_option( 'poet_option' );
 	}
 
@@ -170,9 +167,9 @@ class Plugin {
 	 * Adding Settings link in plugins page
 	 * The link redirects to plugin settings page
 	 *
-	 * @param $links
+	 * @param array $links Include link to new settings page in menus.
 	 *
-	 * @return mixed
+	 * @return array
 	 */
 	public function add_settings_link( $links ) {
 		$url           = menu_page_url( plugin_basename( __FILE__ ), false );
@@ -205,7 +202,7 @@ class Plugin {
 			__( 'Author Name', 'poet-wordpress-plugin' ),
 			[ $this, 'author_callback' ],
 			$this->plugin_path,
-			'poet_setting_section_id' // Section
+			'poet_setting_section_id'
 		);
 
 		add_settings_field(
@@ -213,21 +210,22 @@ class Plugin {
 			__( 'API URL', 'poet-wordpress-plugin' ),
 			[ $this, 'api_url_callback' ],
 			$this->plugin_path,
-			'poet_setting_section_id' // Section
+			'poet_setting_section_id'
 		);
 
 		add_settings_field(
 			'token', __( 'API Token', 'poet-wordpress-plugin' ), [
-			$this,
-			'token_callback'
-		], $this->plugin_path, 'poet_setting_section_id' );
+				$this,
+				'token_callback',
+			], $this->plugin_path, 'poet_setting_section_id'
+		);
 
 		add_settings_field(
 			'active',
 			__( 'Automatically push posts to Po.et on save?', 'poet-wordpress-plugin' ),
 			[ $this, 'active_callback' ],
 			$this->plugin_path,
-			'poet_setting_section_id' // Section
+			'poet_setting_section_id'
 		);
 	}
 
@@ -251,7 +249,7 @@ class Plugin {
 	/**
 	 * Sanitizes option fields data
 	 *
-	 * @param $input
+	 * @param array $input The form input.
 	 *
 	 * @return array
 	 */
@@ -318,7 +316,7 @@ class Plugin {
 	/**
 	 * Called on WordPress post saving (insertion/modifications)
 	 *
-	 * @param $post_id
+	 * @param string|int $post_id WordPress post ID.
 	 */
 	public function post_article( $post_id ) {
 
@@ -330,42 +328,40 @@ class Plugin {
 			return;
 		}
 
-
 		$active  = isset( get_option( 'poet_option' )['active'] ) ? 1 : 0;
 		$api_url = ! empty( get_option( 'poet_option' )['api_url'] ) ? 1 : 0;
 		$token   = ! empty( get_option( 'poet_option' )['token'] ) ? 1 : 0;
 		$post    = get_post( $post_id );
 
-		//Checking if plugin is activated in its settings page and the post status is publish to make sure it is not just a draft
-		if ( ! $active || ! $api_url || ! $token || $post->post_status !== 'publish' ) {
+		// Checking if plugin is activated in its settings page and the post status is publish to make sure it is not just a draft.
+		if ( ! $active || ! $api_url || ! $token || 'publish' !== $post->post_status ) {
 			return;
 		}
-		//Getting API credentials and author name set in plugin settings page
+		// Getting API credentials and author name set in plugin settings page.
 		$author = isset( get_option( 'poet_option' )['author'] ) ? get_option( 'poet_option' )['author'] : '';
 		$url    = isset( get_option( 'poet_option' )['api_url'] ) ? get_option( 'poet_option' )['api_url'] : '';
 		$token  = isset( get_option( 'poet_option' )['token'] ) ? get_option( 'poet_option' )['token'] : '';
 
-		//Generating Consumer object with credentials sent to its constructor
 		$consumer = new \Poet\Consumer( $author, $url, $token, $post );
 
-		//Posting the article to the API
+		// Posting the article to the API.
 		try {
 			$response              = $consumer->consume();
 			$decoded_response_body = json_decode( $response['body'] );
 
-			//Adding initial empty meta key for the poet work id
+			// Adding initial empty meta key for the poet work id.
 			update_post_meta( $post_id, 'poet_work_id', '' );
 
-			//Checking if the returned response body is a valid JSON string
+			// Checking if the returned response body is a valid JSON string.
 			if ( json_last_error() !== JSON_ERROR_SYNTAX
-			     && is_object( $decoded_response_body )
-			     && property_exists( $decoded_response_body, 'workId' ) ) {
+				 && is_object( $decoded_response_body )
+				 && property_exists( $decoded_response_body, 'workId' ) ) {
 
-				//Creating or updating poet work id meta to the returned work id
+				// Creating or updating poet work id meta to the returned work id.
 				update_post_meta( $post_id, 'poet_work_id', $decoded_response_body->workId );
 			}
 		} catch ( \Exception $exception ) {
-
+			// do nothing for now.
 		}
 
 	}
@@ -402,7 +398,7 @@ class Plugin {
 			$work_id               = get_post_meta( $post->ID, 'poet_work_id', true );
 
 			ob_start();
-			include_once dirname( __FILE__ ) . '/assets/templates/poet_badge_template.php';
+			include_once dirname( __FILE__ ) . '/assets/templates/poet-badge-template.php';
 
 			$shortcode_markup = ob_get_clean();
 		}
