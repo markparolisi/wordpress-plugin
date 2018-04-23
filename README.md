@@ -5,19 +5,19 @@ The Po.et WordPress Plugin allows you to automatically submit your blog posts to
 
 ### From source
 
-You will need Phing and Git installed to build from source.
+You will need Composer and Git installed to build from source.
 
 To complete the following steps, you will need to open a command line terminal.
 
-Clone the Github repository:  
+1. Clone the Github repository:  `git clone https://github.com/poetapp/wordpress-plugin.git`
 
-`git clone https://github.com/poetapp/wordpress-plugin.git`
+1. From within the checked out repository:  `composer install`
 
-From within the checked out repository, run:  
-
-`phing package`
+1. Package for WordPress plugin deployment: `composer run-script wp-package`
 
 The packaged zip file will be available under the build directory which is created under your locally cloned git repository.
+
+You can also run PHP CodeSniffer and Unit Tests via `composer run-script lint` and `composer run-script test` respectively.
 
 ### From this repository
 Go to the [releases](https://github.com/poetapp/wordpress-plugin/releases) section of the repository and download the most recent release.
