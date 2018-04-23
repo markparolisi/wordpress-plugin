@@ -3,9 +3,10 @@ Contributors: lautarodragan, knowledgearc
 Donate link:
 Tags: po.et, frost, decentralized, intellectual property, bitcoin
 Requires at least: 4.1
-Requires PHP: 5.2.4
+Requires PHP: 7.0.0
 Tested up to: 4.9.4
 Stable tag: 1.0.1
+Text Domain: poet-wordpress-plugin
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

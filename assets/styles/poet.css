@@ -1,0 +1,46 @@
+.poet-badge {
+    background-color: white;
+    border: 1px solid #CDCDCD;
+    border-radius: 4px;
+    box-shadow: 0 2px 0 0 #F0F0F0;
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 12px;
+    height: 50px;
+    margin: 0 auto;
+    width: 165px;
+}
+
+.poet-badge__container {
+    color: #35393E;
+    display: flex;
+    text-decoration: none;
+    flex-direction: row;
+    height: 50px
+}
+
+.poet-badge__container__image {
+    height: 31px;
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-right: 8px;
+    width: 31px;
+}
+
+.poet-badge__container__text__verified {
+    font-size: 10pt;
+    font-weight: bold;
+    line-height: 15px;
+    margin: 0;
+    padding-top: 10px;
+    text-align: left;
+}
+
+.poet-badge__container__text__date {
+    color: #707070;
+    font-size: 8px;
+    font-weight: bold;
+    line-height: 13px;
+    margin: 0;
+    padding-top: 1px;
+    text-align: left;
+}
