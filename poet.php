@@ -194,25 +194,25 @@ class Plugin {
 		);
 
 		add_settings_section(
-			'poet_setting_section_id', // ID
-			__( 'Po.et Settings', 'poet-wordpress-plugin' ), // Title
-			[ $this, 'print_section_info' ], // Callback
-			$this->plugin_path // Page
+			'poet_setting_section_id',
+			'',
+			[ $this, 'print_section_info' ],
+			$this->plugin_path
 		);
 
 		add_settings_field(
-			'author', // ID
-			__( 'Author Name', 'poet-wordpress-plugin' ), // Title
-			[ $this, 'author_callback' ], // Callback
-			$this->plugin_path, // Page
+			'author',
+			__( 'Author Name', 'poet-wordpress-plugin' ),
+			[ $this, 'author_callback' ],
+			$this->plugin_path,
 			'poet_setting_section_id' // Section
 		);
 
 		add_settings_field(
-			'api_url', // ID
-			__( 'API URL', 'poet-wordpress-plugin' ), // Title
-			[ $this, 'api_url_callback' ], // Callback
-			$this->plugin_path, // Page
+			'api_url',
+			__( 'API URL', 'poet-wordpress-plugin' ),
+			[ $this, 'api_url_callback' ],
+			$this->plugin_path,
 			'poet_setting_section_id' // Section
 		);
 
@@ -223,10 +223,10 @@ class Plugin {
 		], $this->plugin_path, 'poet_setting_section_id' );
 
 		add_settings_field(
-			'active', // ID
-			__( 'Post articles automatically on insert or update?', 'poet-wordpress-plugin' ), // Title
-			[ $this, 'active_callback' ], // Callback
-			$this->plugin_path, // Page
+			'active',
+			__( 'Automatically push posts to Po.et on save?', 'poet-wordpress-plugin' ),
+			[ $this, 'active_callback' ],
+			$this->plugin_path,
 			'poet_setting_section_id' // Section
 		);
 	}
@@ -235,7 +235,17 @@ class Plugin {
 	 * Prints instruction string in top of settings page
 	 */
 	public function print_section_info() {
-		print __( 'Enter Author Name, API URL, and Token (this will return to default value if the plugin deactivated and reactivated again):', 'poet-wordpress-plugin' );
+		?>
+		<a href="https://www.po.et/" target="_blank">
+			<img src="<?php echo esc_url( plugins_url( 'poet-wordpress-plugin/assets/images/logo.svg', dirname( __FILE__ ) ) ); ?>"/>
+		</a>
+		<p>
+			<strong>
+				Enter Author Name, API URL, and Token (this will return to default value if the plugin deactivated
+				and reactivated again)
+			</strong>
+		</p>
+		<?php
 	}
 
 	/**
@@ -282,7 +292,7 @@ class Plugin {
 	 */
 	public function api_url_callback() {
 		printf(
-			'<input type="text" id="api_url" name="poet_option[api_url]" value="%s" required />',
+			'<input type="text" id="api_url" name="poet_option[api_url]" value="%s"  size="50" required />',
 			isset( get_option( 'poet_option' )['api_url'] ) ? esc_attr( get_option( 'poet_option' )['api_url'] ) : ''
 		);
 	}
@@ -292,7 +302,7 @@ class Plugin {
 	 */
 	public function token_callback() {
 		printf(
-			'<input type="text" id="token" name="poet_option[token]" value="%s" required />',
+			'<input type="text" id="token" name="poet_option[token]" value="%s" size="50" required />',
 			isset( get_option( 'poet_option' )['token'] ) ? esc_attr( get_option( 'poet_option' )['token'] ) : ''
 		);
 	}
@@ -369,7 +379,7 @@ class Plugin {
 		}
 
 		$post = get_post();
-		if ( !is_singular() || !has_shortcode( $post->post_content, 'poet-badge' ) ) {
+		if ( ! is_singular() || ! has_shortcode( $post->post_content, 'poet-badge' ) ) {
 			return;
 		}
 
